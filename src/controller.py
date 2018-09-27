@@ -19,11 +19,11 @@ def construct_error_resp(error):
 
 def log(post_data):
     try:
-        scenario = post_data['scenario']
-        service_type = post_data['service_type']
-        log_data = post_data['log_data']
+        #scenario = post_data['scenario']
+        #service_type = post_data['service_type']
+        #log_data = post_data['log_data']
 
-        logger.log(scenario, service_type, log_data)
+        logger.log()
     except Exception as err:
         return construct_error_resp(err)
 
@@ -32,9 +32,9 @@ def log(post_data):
 
 def finish_logging(post_data):
     try:
-        scenario_id = post_data['scenario_id']
+        # scenario_id = post_data['scenario_id']
 
-        logger.finish_scenario(scenario_id)
+        logger.finish_scenario()
     except Exception as err:
         return construct_error_resp(err)
 
