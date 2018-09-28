@@ -1,6 +1,7 @@
 import os
 import configparser
 from typing import Dict
+import logging
 
 from jaeger_client import Tracer, Config
 
@@ -28,6 +29,9 @@ def get_host_port():
 
 
 def create_tracer(service_type):
+    logging.getLogger('').handlers = []
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+
     tracer_config = Config(
         config={
             'sampler': {

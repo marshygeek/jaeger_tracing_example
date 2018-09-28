@@ -1,9 +1,11 @@
-from flask import Response
+import threading
 from json import dumps
+
+from flask import Response
 
 from src.logger import Logger
 
-logger = Logger()
+threading.current_thread().logger = Logger()
 
 
 def construct_error_resp(error):
@@ -17,25 +19,41 @@ def construct_error_resp(error):
     return Response(dumps(result), status=500, content_type='application/json; charset=utf-8')
 
 
+def construct_ok_resp():
+    return dumps({'status': 200, 'result': 'OK'})
+
+
 def log(post_data):
-    try:
-        #scenario = post_data['scenario']
-        #service_type = post_data['service_type']
-        #log_data = post_data['log_data']
+    if not hasattr(log, 'i'):
+        log.i = 1
+
+        logger = threading.current_thread().logger
 
         logger.log()
-    except Exception as err:
-        return construct_error_resp(err)
+        logger.finish_scenario()
+    else:
+        return construct_ok_resp()
 
-    return {'status': 200, 'result': 'OK'}
+    # try:
+    #     scenario = post_data['scenario']
+    #     service_type = post_data['service_type']
+    #     log_data = post_data['log_data']
+    #
+    #     threading.current_thread().logger.log(scenario, service_type, log_data)
+    # except Exception as err:
+    #     return construct_error_resp(err)
+    #
+    # return construct_ok_resp()
 
 
 def finish_logging(post_data):
-    try:
-        # scenario_id = post_data['scenario_id']
+    return construct_ok_resp()
 
-        logger.finish_scenario()
-    except Exception as err:
-        return construct_error_resp(err)
-
-    return {'status': 200, 'result': 'OK'}
+    # try:
+    #     scenario_id = post_data['scenario_id']
+    #
+    #     threading.current_thread().logger.finish_scenario(scenario_id)
+    # except Exception as err:
+    #     return construct_error_resp(err)
+    #
+    # return construct_ok_resp()
