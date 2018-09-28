@@ -30,7 +30,8 @@ def get_host_port():
 
 def create_tracer(service_type):
     logging.getLogger('').handlers = []
-    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+    level = logging.getLevelName(config.get('LOG', 'level'))
+    logging.basicConfig(format='%(message)s', level=level)
 
     tracer_config = Config(
         config={
@@ -49,4 +50,13 @@ def create_tracer(service_type):
     return tracer_config.new_tracer()
 
 
-tracers = {service_type: create_tracer(service_type) for service_type in service_names}  # type: Dict[int, Tracer]
+class Tracers:
+    _tracers = {}  # type: Dict[int, Tracer]
+
+    @staticmethod
+    def init_tracers():
+        Tracers._tracers = {service_type: create_tracer(service_type) for service_type in service_names}
+
+    @staticmethod
+    def get(key):
+        return Tracers._tracers[key]

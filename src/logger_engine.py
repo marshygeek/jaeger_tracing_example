@@ -1,9 +1,8 @@
 from typing import Dict
-from logging import error
 
 from jaeger_client import Span
 
-from src.settings import tracers
+from src.settings import Tracers
 
 
 class LoggerEngine:
@@ -15,24 +14,18 @@ class LoggerEngine:
 
     def start_scenario(self, scenario_name, scenario_id, service_type, child_of=None):
         if scenario_id not in self._active_spans:
-            tracer = tracers[service_type]
+            tracer = Tracers.get(service_type)
 
             parent = self._active_spans.get(child_of) if child_of else None
             span = tracer.start_span(scenario_name, child_of=parent)
             self._active_spans[scenario_id] = span
 
-            error('start scenario ' + scenario_id)
-
     def log(self, scenario_id, log_data):
         span = self._active_spans[scenario_id]
         span.log_kv(log_data)
-
-        error('log {} - {}'.format(scenario_id, log_data))
 
     def finish_scenario(self, scenario_id):
         if scenario_id in self._active_spans:
             span = self._active_spans[scenario_id]
             span.finish()
             del self._active_spans[scenario_id]
-
-            error('finish scenario ' + scenario_id)
