@@ -31,8 +31,8 @@ def log(post_data):
 
         logger.log()
         logger.finish_scenario()
-    else:
-        return construct_ok_resp()
+
+    return construct_ok_resp()
 
     # try:
     #     scenario = post_data['scenario']

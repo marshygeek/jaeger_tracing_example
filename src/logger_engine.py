@@ -33,5 +33,6 @@ class LoggerEngine:
         if scenario_id in self._active_spans:
             span = self._active_spans[scenario_id]
             span.finish()
+            del self._active_spans[scenario_id]
 
             error('finish scenario ' + scenario_id)
